@@ -1,66 +1,59 @@
 # 🛡️ Restic Playground
 
-A training simulator for mastering **Restic** through hands-on practice.
-
-This is **not** a backup tool. It is a sandbox designed to help you master Restic commands, retention policies, and disaster recovery scenarios in a safe, controlled environment.
+> **Master Restic through simulation, not documentation.**
 
 ---
 
-## 🏗️ Architecture
+### 🏗️ Architecture
+```mermaid
+graph LR
+    subgraph "Simulator"
+        DG["<b>Data Generator</b><br/>(Churns assets, db, logs)"]
+        RT["<b>Restic CLI</b><br/>(Backup & Restore)"]
+    end
 
-- **Restic Service**: Official Restic image running as a sidecar.
-- **Data Generator**: Simulates a real workload (application assets, database backups, logs) with continuous churn.
-- **Repository**: A local directory (`./repo`) acting as your backup destination.
-- **Scenarios**: A series of guided lessons to take you from zero to recovery expert.
-
----
-
-## 🚀 Getting Started
-
-### 1. Start the Playground
-```bash
-task up
+    DG -->|Continuous Updates| DATA[("/data<br/>(Mock Workload)")]
+    RT <-->|Snapshot / Restore| DATA
+    RT -->|Encrypted Blobs| REPO[("./repo<br/>(Repository)")]
 ```
-This starts the Restic container and the data generator.
-
-### 2. Enter the Learning Menu
-```bash
-task menu
-```
-Follow the interactive menu to progress through the scenarios.
 
 ---
 
-## 📚 Learning Path
+### 🚀 Getting Started
 
-| Scenario | Goal | Command to Master |
+| Step | Action | Command |
 | :--- | :--- | :--- |
-| **01** | Initialize Repo | `restic init` |
-| **02** | First Backup | `restic backup` |
-| **03** | Exploration | `restic snapshots`, `ls`, `diff` |
-| **04** | Single File Restore | `restic restore --include` |
-| **05** | Full Restore | `restic restore` |
-| **06** | Retention | `restic forget --keep-*`, `prune` |
-| **07** | Disaster Recovery | Cold restore simulation |
+| **1** | Fire up the lab | `task up` |
+| **2** | Start Training | `task menu` |
+| **3** | Check Status | `task status` |
 
 ---
 
-## 🛠️ Maintenance & Safety
+### 📚 Training Curriculum
 
-- **`task status`**: Show current snapshots, repo size, and last logs.
-- **`task reset`**: Wipes the `./data` directory (simulates data loss).
-- **`task wipe`**: Wipes the `./repo` directory (DANGER: deletes all backups).
-- **`task logs`**: Follow logs from the data generator and restic.
+| ID | Module | Mastery Command | Goal |
+| :-- | :--- | :--- | :--- |
+| **01** | **Initialization** | `restic init` | Create your first encrypted repository |
+| **02** | **Snapshotting** | `restic backup` | Capture the state of agnostic data |
+| **03** | **Inspection** | `restic ls`, `diff` | Compare snapshots and track changes |
+| **04** | **Selective Recovery** | `restic restore --include` | Restore a single "accidentally" deleted file |
+| **05** | **Total Recovery** | `restic restore latest` | Rebuild the entire world from scratch |
+| **06** | **Optimization** | `restic forget`, `prune` | Implement retention and reclaim space |
+| **07** | **Disaster Sim** | *Cold Restore* | Recover from a complete system wipe |
 
 ---
 
-## 📝 Observability
-All restic commands executed by the scenarios are logged to `logs/restic.log` for you to inspect.
+### 🕹️ Lab Controls
+
+| Command | Function |
+| :--- | :--- |
+| `task status` | Real-time snapshot count & repo health |
+| `task logs` | Follow data generator churn |
+| `task reset` | **Wipe Data**: Simulates local data loss |
+| `task wipe` | **Wipe Repo**: DANGER - Deletes all backups |
+| `task down` | Kill the simulator |
 
 ---
 
-## 💡 Tips for Learning
-- Run `make status` between scenarios to see how the repo changes.
-- Inspect the `./repo` directory to see how Restic stores data (it's encrypted and deduplicated!).
-- Try to run the commands manually inside the container:
-  `docker exec -it restic-playground restic snapshots`
+### 📝 Logs
+History of all executed restic commands: `logs/restic.log`
