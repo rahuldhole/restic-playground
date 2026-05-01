@@ -25,7 +25,7 @@ echo -e "${GREEN}restic restore latest --target /${NC}"
 
 echo -e "\n${BOLD}🚀 THE ACTION${NC}"
 echo -e "${RED}[!] SIMULATING DISASTER:${NC} Wiping EVERYTHING in sample-data/..."
-docker exec restic-data-gen sh -c "rm -rf /sample-sample-data/*"
+docker exec restic-data-gen sh -c "rm -rf /sample-data/*"
 
 echo -e "Performing full system restore from S3..."
 echo "$(date) [SCENARIO-05] restic restore latest --target /" >> "$LOG_FILE"
@@ -33,7 +33,7 @@ docker exec restic-playground restic restore latest --target / >> "$LOG_FILE" 2>
 
 echo -e "\n${BOLD}🔍 VERIFICATION${NC}"
 echo -e "Inspecting the phoenix rising from the ashes..."
-ls -R data | head -n 15
+ls -R sample-data | head -n 15
 echo "... (truncated)"
 
 echo -e "\n${CYAN}Next Level: run 'task scenario-6' to manage your growing repo.${NC}"

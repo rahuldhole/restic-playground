@@ -25,16 +25,16 @@ echo -e "${GREEN}restic restore latest --target / --include /path/to/file${NC}"
 
 echo -e "\n${BOLD}🚀 THE ACTION${NC}"
 echo -e "${RED}[!] SIMULATING ACCIDENT:${NC} Deleting database/backup.sql..."
-docker exec restic-data-gen rm -f /sample-sample-data/sample-database/backup.sql
+docker exec restic-data-gen rm -f /sample-data/database/backup.sql
 
 echo -e "Recovering the file from S3..."
-echo "$(date) [SCENARIO-04] restic restore latest --include /sample-sample-data/sample-database/backup.sql" >> "$LOG_FILE"
-docker exec restic-playground restic restore latest --target / --include /sample-sample-data/sample-database/backup.sql >> "$LOG_FILE" 2>&1
+echo "$(date) [SCENARIO-04] restic restore latest --include /sample-data/database/backup.sql" >> "$LOG_FILE"
+docker exec restic-playground restic restore latest --target / --include /sample-data/database/backup.sql >> "$LOG_FILE" 2>&1
 
 echo -e "\n${BOLD}🔍 VERIFICATION${NC}"
-if [ -f "sample-data/sample-database/backup.sql" ]; then
+if [ -f "sample-data/database/backup.sql" ]; then
     echo -e "${GREEN}✔ Success! File restored.${NC}"
-    ls -l sample-data/sample-database/backup.sql
+    ls -l sample-data/database/backup.sql
 else
     echo -e "${RED}✘ Failure! File missing. Check logs.${NC}"
 fi

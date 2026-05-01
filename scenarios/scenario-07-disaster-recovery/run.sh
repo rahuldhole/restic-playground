@@ -25,7 +25,7 @@ echo -e "${GREEN}restic restore latest --target /${NC}"
 
 echo -e "\n${BOLD}🚀 THE ACTION${NC}"
 echo -e "${RED}[!] SIMULATING TOTAL LOSS:${NC} Wiping all data..."
-docker exec restic-data-gen sh -c "rm -rf /sample-sample-data/*"
+docker exec restic-data-gen sh -c "rm -rf /sample-data/*"
 
 echo -e "Re-establishing connection to S3 and pulling data..."
 echo "$(date) [SCENARIO-07] restic restore latest --target /" >> "$LOG_FILE"
