@@ -24,8 +24,8 @@ echo -e "\n${BOLD}💻 THE COMMAND${NC}"
 echo -e "${GREEN}restic restore latest --target /${NC}"
 
 echo -e "\n${BOLD}🚀 THE ACTION${NC}"
-echo -e "${RED}[!] SIMULATING DISASTER:${NC} Wiping EVERYTHING in data/..."
-docker exec restic-data-gen sh -c "rm -rf /data/*"
+echo -e "${RED}[!] SIMULATING DISASTER:${NC} Wiping EVERYTHING in sample-data/..."
+docker exec restic-data-gen sh -c "rm -rf /sample-sample-data/*"
 
 echo -e "Performing full system restore from S3..."
 echo "$(date) [SCENARIO-05] restic restore latest --target /" >> "$LOG_FILE"

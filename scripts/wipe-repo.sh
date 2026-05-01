@@ -16,7 +16,7 @@ read -r answer
 if [ "$answer" = "DELETE" ]; then
     echo "Wiping ./minio_data..."
     # Using docker to wipe to avoid permission issues with minio-created files
-    docker run --rm -v $(pwd)/minio_data:/data alpine sh -c "rm -rf /data/* /data/.* 2>/dev/null || true"
+    docker run --rm -v $(pwd)/minio_data:/sample-data alpine sh -c "rm -rf /sample-sample-data/* /sample-sample-data/.* 2>/dev/null || true"
     echo "S3 Repository wiped."
 else
     echo "Aborted."

@@ -31,6 +31,6 @@ docker exec restic-playground restic ls "$LATEST_ID" | head -n 10
 echo "... (truncated)"
 
 echo -e "\n${BOLD}🔍 VERIFICATION${NC}"
-echo -e "Notice how the paths are preserved exactly as they were in /data."
+echo -e "Notice how the paths are preserved exactly as they were in /sample-data."
 
 echo -e "\n${CYAN}Next Level: run 'task scenario-4' for your first restoration.${NC}"

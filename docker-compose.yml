@@ -3,7 +3,7 @@ services:
     image: restic/restic:latest
     container_name: restic-playground
     volumes:
-      - ./data:/data:rw
+      - ./sample-data:/sample-data:rw
       - ./logs:/logs
       - ./scripts:/scripts:ro
       - ./scenarios:/scenarios:ro
@@ -25,7 +25,7 @@ services:
       - "9898:9898"
     environment:
       - BACKREST_PORT=0.0.0.0:9898
-      - BACKREST_DATA=/backrest_internal
+      - BACKREST_DATA=/data
       - BACKREST_CONFIG=/config/config.json
       - XDG_CACHE_HOME=/cache
       - TMPDIR=/tmp
@@ -35,11 +35,13 @@ services:
       - AWS_ACCESS_KEY_ID=minioadmin
       - AWS_SECRET_ACCESS_KEY=minioadmin
     volumes:
-      - ./backrest/data:/backrest_internal
+      - ./backrest/data:/data
       - ./backrest/config:/config
       - ./backrest/cache:/cache
       - ./backrest/tmp:/tmp
-      - ./data:/data:rw
+      - ./backrest/rclone:/root/.config/rclone
+      - ./sample-data:/sample-data:rw
+      - ./repo:/repo:rw
     depends_on:
       minio:
         condition: service_started
@@ -50,7 +52,7 @@ services:
     image: alpine:latest
     container_name: restic-data-gen
     volumes:
-      - ./data:/data
+      - ./sample-data:/sample-data
       - ./scripts/data-gen.sh:/usr/local/bin/data-gen.sh:ro
     command: ["/bin/sh", "/usr/local/bin/data-gen.sh"]
     restart: unless-stopped

@@ -9,7 +9,7 @@
 | Command | Usage | Quick Tutorial |
 | :--- | :--- | :--- |
 | **init** | `restic init` | **Initialize** a new repository. Only run once per project. |
-| **backup** | `restic backup /data` | **Snapshot** a directory. Restic only sends new/changed data. |
+| **backup** | `restic backup /sample-data` | **Snapshot** a directory. Restic only sends new/changed data. |
 | **snapshots** | `restic snapshots` | **List** all points in time available for restoration. |
 | **ls** | `restic ls <id>` | **Peek** inside a snapshot to see the file structure at that time. |
 | **dump** | `restic dump latest /path/to/file` | **Read** a single file's content directly to stdout without restoring. |
@@ -35,7 +35,7 @@
 ### Selective Restore
 Don't wait for a full restore if you only need one folder:
 ```bash
-restic restore latest --target / --include /data/database
+restic restore latest --target / --include /sample-sample-data/sample-database
 ```
 
 ### Dry Run
@@ -47,5 +47,5 @@ restic forget --keep-daily 7 --dry-run
 ### Snapshots Filters
 Filter snapshots by path or hostname:
 ```bash
-restic snapshots --path /data/app_data
+restic snapshots --path /sample-sample-data/app_data
 ```

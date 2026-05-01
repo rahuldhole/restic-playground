@@ -26,8 +26,8 @@ echo -e "up the storage (prune) in one go."
 
 echo -e "\n${BOLD}🚀 THE ACTION${NC}"
 echo -e "Creating dummy snapshots to simulate history..."
-docker exec restic-playground restic backup /data > /dev/null 2>&1
-docker exec restic-playground restic backup /data > /dev/null 2>&1
+docker exec restic-playground restic backup /sample-data > /dev/null 2>&1
+docker exec restic-playground restic backup /sample-data > /dev/null 2>&1
 
 echo -e "Executing retention policy..."
 echo "$(date) [SCENARIO-06] restic forget --keep-last 1 --prune" >> "$LOG_FILE"

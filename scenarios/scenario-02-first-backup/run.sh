@@ -20,14 +20,14 @@ echo -e "Unlike old-school backups, Restic only stores the *difference*."
 echo -e "If you backup 1GB, then change 1KB, the next snapshot only adds 1KB."
 
 echo -e "\n${BOLD}💻 THE COMMAND${NC}"
-echo -e "${GREEN}restic backup /data${NC}"
+echo -e "${GREEN}restic backup /sample-data${NC}"
 echo -e "This scans the source directory, chunks the data, hashes it,"
 echo -e "and sends only new chunks to the S3 bucket."
 
 echo -e "\n${BOLD}🚀 THE ACTION${NC}"
-echo -e "Backing up /data to the cloud..."
-echo "$(date) [SCENARIO-02] restic backup /data" >> "$LOG_FILE"
-docker exec restic-playground restic backup /data >> "$LOG_FILE" 2>&1
+echo -e "Backing up /sample-data to the cloud..."
+echo "$(date) [SCENARIO-02] restic backup /sample-data" >> "$LOG_FILE"
+docker exec restic-playground restic backup /sample-data >> "$LOG_FILE" 2>&1
 echo -e "${GREEN}✔ Snapshot created successfully!${NC}"
 
 echo -e "\n${BOLD}🔍 VERIFICATION${NC}"

@@ -1,5 +1,6 @@
 # Simulation Data
-data/
+sample-data/
+repo/
 minio_data/
 backrest/
 logs/

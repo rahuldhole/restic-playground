@@ -17,7 +17,7 @@ graph LR
         MN[("<b>Minio S3</b><br/>(Object Storage)")]
     end
 
-    DG -->|Continuous Updates| DATA[("/data<br/>(Mock Workload)")]
+    DG -->|Continuous Updates| DATA[("/sample-data<br/>(Mock Workload)")]
     RT <-->|Snapshot / Restore| DATA
     RT <-->|S3 API / Encrypted| MN
 ```
