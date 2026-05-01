@@ -1,6 +1,6 @@
 # 📝 Restic Mastery Cheatsheet
 
-> Use this guide while running the interactive scenarios. All commands can be run via the local wrapper: `restic <command>`
+> Use this guide while running the interactive scenarios. All commands can be run via the local wrapper: `./restic <command>` or alias `alias r="./restic"`.
 
 ---
 
