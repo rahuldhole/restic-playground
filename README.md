@@ -56,6 +56,7 @@ graph LR
 | `task reset` | **Wipe Data**: Simulates local data loss |
 | `task wipe` | **Wipe Repo**: DANGER - Deletes all backups |
 | `task down` | Kill the simulator |
+| `./restic <cmd>` | **CLI Wrapper**: Run restic directly from host |
 
 ---
 

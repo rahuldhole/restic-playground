@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# Restic Playground Wrapper Script
+# This script routes your local 'restic' commands into the Docker container.
+
+if ! docker ps | grep -q restic-playground; then
+    echo "Error: restic-playground container is not running."
+    echo "Run 'task up' first."
+    exit 1
+fi
+
+docker exec -it restic-playground restic "$@"
