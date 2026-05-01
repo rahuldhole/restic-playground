@@ -20,21 +20,26 @@ services:
   backrest:
     image: ghcr.io/garethgeorge/backrest:latest
     container_name: restic-backrest
+    hostname: backrest
     ports:
       - "9898:9898"
     environment:
       - BACKREST_PORT=0.0.0.0:9898
+      - BACKREST_DATA=/data
       - BACKREST_CONFIG=/config/config.json
-      - BACKREST_DATA=/config/data
       - XDG_CACHE_HOME=/cache
+      - TMPDIR=/tmp
+      - TZ=UTC
       - RESTIC_REPOSITORY=s3:http://minio:9000/playground
       - RESTIC_PASSWORD=playground-password
       - AWS_ACCESS_KEY_ID=minioadmin
       - AWS_SECRET_ACCESS_KEY=minioadmin
     volumes:
-      - ./backrest_config:/config
-      - ./backrest_cache:/cache
-      - ./data:/data:ro
+      - ./backrest/data:/data
+      - ./backrest/config:/config
+      - ./backrest/cache:/cache
+      - ./backrest/tmp:/tmp
+      - ./data:/userdata:ro
     depends_on:
       minio:
         condition: service_started
