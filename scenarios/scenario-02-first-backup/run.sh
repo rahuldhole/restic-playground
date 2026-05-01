@@ -26,6 +26,6 @@ docker exec restic-playground restic backup /data >> "$LOG_FILE" 2>&1
 
 echo -e "${GREEN}SUCCESS: Backup completed!${NC}"
 echo "Restic scanned /data and saved the files to the repo."
-echo "Try running 'make status' to see the new snapshot."
+echo "Try running 'task status' to see the new snapshot."
 echo ""
-echo "Next: run 'make scenario-3' to explore your snapshots."
+echo "Next: run 'task scenario-3' to explore your snapshots."

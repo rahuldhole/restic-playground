@@ -1,8 +1,8 @@
-# Local Data & Repository
+# Local Data & S3 Simulation
 data/*
 !data/.gitkeep
-repo/*
-!repo/.gitkeep
+minio_data/*
+!minio_data/.gitkeep
 
 # Logs
 logs/*

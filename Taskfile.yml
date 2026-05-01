@@ -2,76 +2,76 @@ version: '3'
 
 tasks:
   up:
-    desc: Start the Restic Playground environment
+    desc: "Start the Restic Playground environment"
     cmds:
       - docker compose up -d
 
   down:
-    desc: Stop the environment
+    desc: "Stop the environment"
     cmds:
       - docker compose down
 
   ps:
-    desc: Show running services
+    desc: "Show running services"
     cmds:
       - docker compose ps
 
   logs:
-    desc: Follow service logs
+    desc: "Follow service logs"
     cmds:
       - docker compose logs -f
 
   status:
-    desc: Show restic snapshots and repo health
+    desc: "Show restic snapshots and repo health"
     cmds:
       - ./scripts/status.sh
 
   reset:
-    desc: Wipe local data (preserves repository)
+    desc: "Wipe local data (preserves repository)"
     cmds:
       - ./scripts/reset.sh
 
   wipe:
-    desc: DANGER - Wipe the Restic repository
+    desc: "DANGER - Wipe the Restic repository"
     cmds:
       - ./scripts/wipe-repo.sh
 
   menu:
-    desc: Open the interactive learning menu
+    desc: "Open the interactive learning menu"
     cmds:
       - ./scripts/menu.sh
 
   scenario-1:
-    desc: Lesson 1: Init Repo
+    desc: "Lesson 1: Init Repo"
     cmds:
       - ./scenarios/scenario-01-init-repo/run.sh
 
   scenario-2:
-    desc: Lesson 2: First Backup
+    desc: "Lesson 2: First Backup"
     cmds:
       - ./scenarios/scenario-02-first-backup/run.sh
 
   scenario-3:
-    desc: Lesson 3: Snapshot Exploration
+    desc: "Lesson 3: Snapshot Exploration"
     cmds:
       - ./scenarios/scenario-03-snapshot-exploration/run.sh
 
   scenario-4:
-    desc: Lesson 4: Restore Single File
+    desc: "Lesson 4: Restore Single File"
     cmds:
       - ./scenarios/scenario-04-restore-single-file/run.sh
 
   scenario-5:
-    desc: Lesson 5: Full Restore
+    desc: "Lesson 5: Full Restore"
     cmds:
       - ./scenarios/scenario-05-full-system-restore/run.sh
 
   scenario-6:
-    desc: Lesson 6: Retention & Pruning
+    desc: "Lesson 6: Retention & Pruning"
     cmds:
       - ./scenarios/scenario-06-forget-prune-retention/run.sh
 
   scenario-7:
-    desc: Lesson 7: Disaster Recovery
+    desc: "Lesson 7: Disaster Recovery"
     cmds:
       - ./scenarios/scenario-07-disaster-recovery/run.sh

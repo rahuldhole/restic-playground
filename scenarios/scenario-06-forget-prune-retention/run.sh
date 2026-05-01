@@ -33,7 +33,7 @@ docker exec restic-playground restic forget --keep-last 1 --prune >> "$LOG_FILE"
 
 echo -e "${GREEN}SUCCESS: Repository cleaned up!${NC}"
 echo "Restic removed references to old snapshots and deleted unneeded data blobs."
-echo "Check 'make status' to see the result."
+echo "Check 'task status' to see the result."
 
 echo ""
-echo "Next: run 'make scenario-7' for the ultimate Disaster Recovery test."
+echo "Next: run 'task scenario-7' for the ultimate Disaster Recovery test."

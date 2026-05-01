@@ -38,4 +38,4 @@ else
 fi
 
 echo ""
-echo "Next: run 'make scenario-5' for a full system restore."
+echo "Next: run 'task scenario-5' for a full system restore."

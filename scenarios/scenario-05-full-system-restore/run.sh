@@ -34,4 +34,4 @@ ls -R ../../data | head -n 15
 echo "... (showing subset of restored data)"
 
 echo ""
-echo "Next: run 'make scenario-6' to learn about retention and pruning."
+echo "Next: run 'task scenario-6' to learn about retention and pruning."

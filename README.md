@@ -7,14 +7,18 @@
 ### 🏗️ Architecture
 ```mermaid
 graph LR
-    subgraph "Simulator"
-        DG["<b>Data Generator</b><br/>(Churns assets, db, logs)"]
+    subgraph "Local Lab"
+        DG["<b>Data Generator</b><br/>(Churns agnostic data)"]
         RT["<b>Restic CLI</b><br/>(Backup & Restore)"]
+    end
+
+    subgraph "Cloud Simulator (S3)"
+        MN[("<b>Minio S3</b><br/>(Object Storage)")]
     end
 
     DG -->|Continuous Updates| DATA[("/data<br/>(Mock Workload)")]
     RT <-->|Snapshot / Restore| DATA
-    RT -->|Encrypted Blobs| REPO[("./repo<br/>(Repository)")]
+    RT <-->|S3 API / Encrypted| MN
 ```
 
 ---
