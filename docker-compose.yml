@@ -3,7 +3,7 @@ services:
     image: restic/restic:latest
     container_name: restic-playground
     volumes:
-      - ./data:/data:ro
+      - ./data:/data:rw
       - ./logs:/logs
       - ./scripts:/scripts:ro
       - ./scenarios:/scenarios:ro
