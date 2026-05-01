@@ -11,27 +11,29 @@ NC='\033[0m'
 
 LOG_FILE="logs/restic.log"
 
-echo -e "${CYAN}${BOLD}LESSON 5: Full System Restore${NC}"
-echo "------------------------------------------------"
-echo "Total catastrophe! All data is gone. We need to restore everything."
-echo ""
+echo -e "${CYAN}${BOLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo -e "${CYAN}${BOLD}  LESSON 05: THE PHOENIX - FULL SYSTEM RESTORE      ${NC}"
+echo -e "${CYAN}${BOLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 
-# 1. Simulate failure
-echo -e "${RED}SIMULATING FAILURE:${NC} Wiping all data in /data..."
+echo -e "\n${BOLD}📖 THE CONCEPT${NC}"
+echo -e "Your data partition is gone. Formatting happened. Fire in the server room."
+echo -e "This is where Restic proves its worth. We will rebuild the entire"
+echo -e "directory structure exactly as it was, with all metadata intact."
+
+echo -e "\n${BOLD}💻 THE COMMAND${NC}"
+echo -e "${GREEN}restic restore latest --target /${NC}"
+
+echo -e "\n${BOLD}🚀 THE ACTION${NC}"
+echo -e "${RED}[!] SIMULATING DISASTER:${NC} Wiping EVERYTHING in data/..."
 rm -rf data/*
 
-echo -e "${BOLD}COMMAND TO LEARN:${NC}"
-echo -e "restic restore latest --target /"
-echo ""
-
-echo -e "${BOLD}EXECUTING FULL RESTORE:${NC}"
+echo -e "Performing full system restore from S3..."
 echo "$(date) [SCENARIO-05] restic restore latest --target /" >> "$LOG_FILE"
-
 docker exec restic-playground restic restore latest --target / >> "$LOG_FILE" 2>&1
 
-echo -e "${GREEN}SUCCESS: All data restored!${NC}"
-ls -R ../../data | head -n 15
-echo "... (showing subset of restored data)"
+echo -e "\n${BOLD}🔍 VERIFICATION${NC}"
+echo -e "Inspecting the phoenix rising from the ashes..."
+ls -R data | head -n 15
+echo "... (truncated)"
 
-echo ""
-echo "Next: run 'task scenario-6' to learn about retention and pruning."
+echo -e "\n${CYAN}Next Level: run 'task scenario-6' to manage your growing repo.${NC}"

@@ -11,31 +11,32 @@ NC='\033[0m'
 
 LOG_FILE="logs/restic.log"
 
-echo -e "${CYAN}${BOLD}LESSON 4: Restoring a Single File${NC}"
-echo "------------------------------------------------"
-echo "Oops! Someone deleted the database dump. Let's get it back."
-echo ""
+echo -e "${CYAN}${BOLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo -e "${CYAN}${BOLD}  LESSON 04: THE SURGERY - SELECTIVE RESTORE        ${NC}"
+echo -e "${CYAN}${BOLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 
-# 1. Simulate failure
-echo -e "${RED}SIMULATING FAILURE:${NC} Deleting /data/database/backup.sql..."
+echo -e "\n${BOLD}📖 THE CONCEPT${NC}"
+echo -e "Total recovery is great, but often you just need *one* file back."
+echo -e "Restic's ${BOLD}--include${NC} flag lets you perform 'surgery' on your snapshots"
+echo -e "to extract exactly what you need without waiting for a full restore."
+
+echo -e "\n${BOLD}💻 THE COMMAND${NC}"
+echo -e "${GREEN}restic restore latest --target / --include /path/to/file${NC}"
+
+echo -e "\n${BOLD}🚀 THE ACTION${NC}"
+echo -e "${RED}[!] SIMULATING ACCIDENT:${NC} Deleting database/backup.sql..."
 rm -f data/database/backup.sql
 
-echo -e "${BOLD}COMMAND TO LEARN:${NC}"
-echo -e "restic restore latest --target / --include /data/database/backup.sql"
-echo ""
-
-echo -e "${BOLD}EXECUTING RESTORE:${NC}"
+echo -e "Recovering the file from S3..."
 echo "$(date) [SCENARIO-04] restic restore latest --include /data/database/backup.sql" >> "$LOG_FILE"
-
 docker exec restic-playground restic restore latest --target / --include /data/database/backup.sql >> "$LOG_FILE" 2>&1
 
+echo -e "\n${BOLD}🔍 VERIFICATION${NC}"
 if [ -f "data/database/backup.sql" ]; then
-    echo -e "${GREEN}SUCCESS: File restored!${NC}"
+    echo -e "${GREEN}✔ Success! File restored.${NC}"
     ls -l data/database/backup.sql
 else
-    echo -e "${RED}FAILURE: File not restored. Check logs/restic.log${NC}"
-    exit 1
+    echo -e "${RED}✘ Failure! File missing. Check logs.${NC}"
 fi
 
-echo ""
-echo "Next: run 'task scenario-5' for a full system restore."
+echo -e "\n${CYAN}Next Level: run 'task scenario-5' for a full disaster drill.${NC}"

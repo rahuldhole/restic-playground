@@ -11,30 +11,28 @@ NC='\033[0m'
 
 LOG_FILE="logs/restic.log"
 
-echo -e "${CYAN}${BOLD}LESSON 7: Ultimate Disaster Recovery${NC}"
-echo "------------------------------------------------"
-echo "Your server exploded. You have a fresh machine and your repo backup."
-echo "Let's simulate a 'cold' restore."
-echo ""
+echo -e "${CYAN}${BOLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo -e "${CYAN}${BOLD}  LESSON 07: THE SURVIVOR - DISASTER RECOVERY       ${NC}"
+echo -e "${CYAN}${BOLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 
-# 1. Simulate failure
-echo -e "${RED}SIMULATING DISASTER:${NC} Wiping all data..."
+echo -e "\n${BOLD}📖 THE CONCEPT${NC}"
+echo -e "Your server is a smoking crater. You have nothing but your S3 keys."
+echo -e "A ${BOLD}Cold Restore${NC} is the ultimate test. We will simulate this by"
+echo -e "wiping all local data and asking Restic to rebuild it from the cloud."
+
+echo -e "\n${BOLD}💻 THE COMMAND${NC}"
+echo -e "${GREEN}restic restore latest --target /${NC}"
+
+echo -e "\n${BOLD}🚀 THE ACTION${NC}"
+echo -e "${RED}[!] SIMULATING TOTAL LOSS:${NC} Wiping all data..."
 rm -rf data/*
 
-# 2. Simulate "new" restic container by ensuring we can still connect to repo
-echo -e "Wait, the repo is still in ./repo. In a real disaster, you'd pull this from S3."
-echo ""
-
-echo -e "${BOLD}COMMAND TO LEARN:${NC}"
-echo -e "restic restore latest --target /"
-echo ""
-
-echo -e "${BOLD}EXECUTING RECOVERY:${NC}"
+echo -e "Re-establishing connection to S3 and pulling data..."
 echo "$(date) [SCENARIO-07] restic restore latest --target /" >> "$LOG_FILE"
-
 docker exec restic-playground restic restore latest --target / >> "$LOG_FILE" 2>&1
 
-echo -e "${GREEN}SUCCESS: Recovery complete!${NC}"
-echo "Even with a totally empty data directory, Restic rebuilt your world."
-echo ""
-echo "Congratulations! You have completed the Restic Playground."
+echo -e "\n${BOLD}🔍 VERIFICATION${NC}"
+echo -e "${GREEN}✔ Recovery complete!${NC} All files are back in their original paths."
+echo -e "You have successfully survived a simulated catastrophic failure."
+
+echo -e "\n${CYAN}${BOLD}🏆 CONGRATULATIONS! You have completed the Restic Playground.${NC}"

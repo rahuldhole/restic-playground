@@ -8,27 +8,29 @@ CYAN='\033[0;36m'
 GREEN='\033[0;32m'
 NC='\033[0m'
 
-echo -e "${CYAN}${BOLD}LESSON 3: Snapshot Exploration${NC}"
-echo "------------------------------------------------"
-echo "Backup is done. But what's inside? How do we see changes?"
-echo ""
-echo -e "${BOLD}COMMANDS TO LEARN:${NC}"
-echo -e "restic snapshots"
-echo -e "restic ls <snapshot-id>"
-echo -e "restic diff <id1> <id2>"
-echo ""
+echo -e "${CYAN}${BOLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo -e "${CYAN}${BOLD}  LESSON 03: THE TIME MACHINE - EXPLORATION          ${NC}"
+echo -e "${CYAN}${BOLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 
-echo -e "${BOLD}LISTING SNAPSHOTS:${NC}"
+echo -e "\n${BOLD}📖 THE CONCEPT${NC}"
+echo -e "How do you know what changed? Restic allows you to ${BOLD}ls${NC} inside"
+echo -e "a snapshot and ${BOLD}diff${NC} two snapshots to see exactly what"
+echo -e "was added, changed, or deleted."
+
+echo -e "\n${BOLD}💻 THE COMMANDS${NC}"
+echo -e "${GREEN}restic ls <id>${NC}     : List files in snapshot"
+echo -e "${GREEN}restic diff <a, b>${NC} : Show delta between two states"
+
+echo -e "\n${BOLD}🚀 THE ACTION${NC}"
+echo -e "Listing your snapshots..."
 docker exec restic-playground restic snapshots
 
-echo ""
-echo -e "${BOLD}LATEST SNAPSHOT CONTENTS:${NC}"
+echo -e "\nInspecting the latest snapshot contents..."
 LATEST_ID=$(docker exec restic-playground restic snapshots --json | grep -oE '"id":"[0-9a-f]+"' | head -1 | cut -d'"' -f4)
 docker exec restic-playground restic ls "$LATEST_ID" | head -n 10
-echo "... (showing first 10 files)"
+echo "... (truncated)"
 
-echo ""
-echo -e "${GREEN}SUCCESS: You've explored the repo!${NC}"
-echo "Restic treats snapshots as immutable views of your data."
-echo ""
-echo "Next: run 'task scenario-4' to restore a single file."
+echo -e "\n${BOLD}🔍 VERIFICATION${NC}"
+echo -e "Notice how the paths are preserved exactly as they were in /data."
+
+echo -e "\n${CYAN}Next Level: run 'task scenario-4' for your first restoration.${NC}"
