@@ -25,7 +25,7 @@ services:
       - "9898:9898"
     environment:
       - BACKREST_PORT=0.0.0.0:9898
-      - BACKREST_DATA=/data
+      - BACKREST_DATA=/backrest_internal
       - BACKREST_CONFIG=/config/config.json
       - XDG_CACHE_HOME=/cache
       - TMPDIR=/tmp
@@ -35,11 +35,11 @@ services:
       - AWS_ACCESS_KEY_ID=minioadmin
       - AWS_SECRET_ACCESS_KEY=minioadmin
     volumes:
-      - ./backrest/data:/data
+      - ./backrest/data:/backrest_internal
       - ./backrest/config:/config
       - ./backrest/cache:/cache
       - ./backrest/tmp:/tmp
-      - ./data:/userdata:ro
+      - ./data:/data:rw
     depends_on:
       minio:
         condition: service_started
