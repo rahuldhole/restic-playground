@@ -1,6 +1,7 @@
 # 🛡️ Restic Playground
 
 > **Master Restic through simulation, not documentation.**
+> [📖 View Command Cheatsheet](./cheatsheet.md)
 
 ---
 
