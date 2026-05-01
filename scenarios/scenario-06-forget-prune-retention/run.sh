@@ -8,7 +8,7 @@ CYAN='\033[0;36m'
 GREEN='\033[0;32m'
 NC='\033[0m'
 
-LOG_FILE="../../logs/restic.log"
+LOG_FILE="logs/restic.log"
 
 echo -e "${CYAN}${BOLD}LESSON 6: Retention and Pruning${NC}"
 echo "------------------------------------------------"

@@ -7,7 +7,7 @@ NC='\033[0m'
 
 echo -e "${RED}!!! SAFETY LAYER: RESET DATA !!!${NC}"
 echo "This will wipe all data in the ./data directory."
-echo "The Restic repository in ./repo will remain intact."
+echo "The Restic repository on S3 storage will remain intact."
 echo -n "Are you sure? (y/n) "
 read -r answer
 

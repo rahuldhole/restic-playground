@@ -4,11 +4,12 @@
 GREEN='\033[0;32m'
 NC='\033[0m' # No Color
 
+# status.sh
 echo -e "${GREEN}=== Restic Playground Status ===${NC}"
 
 # Check if container is running
 if ! docker ps | grep -q restic-playground; then
-    echo "Container restic-playground is not running. Run 'make up' first."
+    echo "Container restic-playground is not running. Run 'task up' first."
     exit 1
 fi
 
