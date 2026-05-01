@@ -1,0 +1,23 @@
+services:
+  restic:
+    image: restic/restic:latest
+    container_name: restic-playground
+    volumes:
+      - ./data:/data:ro
+      - ./repo:/repo
+      - ./logs:/logs
+      - ./scripts:/scripts:ro
+      - ./scenarios:/scenarios:ro
+    environment:
+      - RESTIC_REPOSITORY=/repo
+      - RESTIC_PASSWORD=playground-password
+    entrypoint: ["/usr/bin/tail", "-f", "/dev/null"] # Keep it alive
+
+  data-gen:
+    image: alpine:latest
+    container_name: restic-data-gen
+    volumes:
+      - ./data:/data
+      - ./scripts/data-gen.sh:/usr/local/bin/data-gen.sh:ro
+    command: ["/bin/sh", "/usr/local/bin/data-gen.sh"]
+    restart: unless-stopped

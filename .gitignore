@@ -1,1 +1,19 @@
-*.log
+# Local Data & Repository
+data/*
+!data/.gitkeep
+repo/*
+!repo/.gitkeep
+
+# Logs
+logs/*
+!logs/.gitkeep
+
+# Environment variables
+.env
+.env.local
+
+# OS / IDE
+.DS_Store
+.idea/
+.vscode/
+node_modules/
