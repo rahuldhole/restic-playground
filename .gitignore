@@ -3,6 +3,8 @@ data/*
 !data/.gitkeep
 minio_data/*
 !minio_data/.gitkeep
+backrest_config/*
+!backrest_config/.gitkeep
 
 # Logs
 logs/*
