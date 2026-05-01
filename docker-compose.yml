@@ -30,10 +30,6 @@ services:
       - XDG_CACHE_HOME=/cache
       - TMPDIR=/tmp
       - TZ=UTC
-      - RESTIC_REPOSITORY=s3:http://minio:9000/playground
-      - RESTIC_PASSWORD=playground-password
-      - AWS_ACCESS_KEY_ID=minioadmin
-      - AWS_SECRET_ACCESS_KEY=minioadmin
     volumes:
       - ./backrest/data:/data
       - ./backrest/config:/config
