@@ -38,7 +38,7 @@ graph LR
 
 | Service | URL | Credentials |
 | :--- | :--- | :--- |
-| **Backrest UI** | `http://localhost:9898` | *(None)* |
+| **Backrest UI** | `http://localhost:9898` | `admin` / `admin` |
 | **Minio Console** | `http://localhost:9001` | `minioadmin` / `minioadmin` |
 
 ---
