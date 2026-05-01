@@ -25,7 +25,7 @@ echo -e "${GREEN}restic restore latest --target / --include /path/to/file${NC}"
 
 echo -e "\n${BOLD}🚀 THE ACTION${NC}"
 echo -e "${RED}[!] SIMULATING ACCIDENT:${NC} Deleting database/backup.sql..."
-rm -f data/database/backup.sql
+docker exec restic-data-gen rm -f /data/database/backup.sql
 
 echo -e "Recovering the file from S3..."
 echo "$(date) [SCENARIO-04] restic restore latest --include /data/database/backup.sql" >> "$LOG_FILE"

@@ -12,8 +12,8 @@ echo -n "Are you sure? (y/n) "
 read -r answer
 
 if [ "$answer" != "${answer#[Yy]}" ]; then
-    echo "Wiping ./data..."
-    rm -rf ./data/*
+    echo "Wiping data via Docker..."
+    docker exec restic-data-gen sh -c "rm -rf /data/*"
     echo -e "${YELLOW}Data wiped. Data generator will recreate base files in a few seconds.${NC}"
 else
     echo "Aborted."
