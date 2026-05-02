@@ -82,7 +82,17 @@ func (c *Client) Backup(paths []string) (string, error) {
 	return c.Run(args...)
 }
 
+// Restore restores a snapshot to the target path
+func (c *Client) Restore(snapshotID, target string) (string, error) {
+	return c.Run("restore", snapshotID, "--target", target)
+}
+
 // Stats returns statistics about the repository
 func (c *Client) Stats() (string, error) {
-	return c.Run("stats")
+	return c.Run("stats", "--json")
+}
+
+// Check performs a consistency check on the repository
+func (c *Client) Check() (string, error) {
+	return c.Run("check")
 }

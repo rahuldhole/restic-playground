@@ -16,7 +16,9 @@ type state int
 const (
 	stateDashboard state = iota
 	stateSnapshots
+	stateRestore
 	stateBackup
+	stateStats
 	stateSettings
 )
 
@@ -58,7 +60,9 @@ func NewMainModel(client *restic.Client) MainModel {
 	items := []list.Item{
 		item{title: "Dashboard", desc: "Overview of your repository", state: stateDashboard},
 		item{title: "Snapshots", desc: "Browse and manage backups", state: stateSnapshots},
+		item{title: "Restore", desc: "Recover data from snapshots", state: stateRestore},
 		item{title: "Backup", desc: "Create a new backup", state: stateBackup},
+		item{title: "Stats", desc: "View repository statistics", state: stateStats},
 		item{title: "Settings", desc: "Configure restic environment", state: stateSettings},
 	}
 
@@ -96,6 +100,18 @@ func (m MainModel) runBackup() tea.Cmd {
 	}
 }
 
+type statsMsg string
+
+func (m MainModel) fetchStats() tea.Cmd {
+	return func() tea.Msg {
+		output, err := m.client.Stats()
+		if err != nil {
+			return errorMsg(err)
+		}
+		return statsMsg(output)
+	}
+}
+
 func (m MainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 
@@ -115,6 +131,10 @@ func (m MainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					m.loading = true
 					return m, m.runBackup()
 				}
+				if m.state == stateStats {
+					m.loading = true
+					return m, m.fetchStats()
+				}
 			}
 		case "esc":
 			m.state = stateDashboard
@@ -123,6 +143,10 @@ func (m MainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if m.state == stateSnapshots {
 				m.loading = true
 				return m, m.fetchSnapshots()
+			}
+			if m.state == stateStats {
+				m.loading = true
+				return m, m.fetchStats()
 			}
 		}
 
@@ -140,6 +164,11 @@ func (m MainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.loading = false
 		return m, m.fetchSnapshots()
 
+	case statsMsg:
+		m.loading = false
+		// In a real app we'd parse this JSON, for now just show it
+		return m, nil
+
 	case errorMsg:
 		m.err = msg
 		m.loading = false
@@ -152,6 +181,20 @@ func (m MainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	m.list, cmd = m.list.Update(msg)
 	return m, cmd
+}
+
+func (m MainModel) statsView() string {
+	return styles.HeaderStyle.Render("Repository Stats") + "\n\n" +
+		"Fetching detailed statistics...\n\n" +
+		"Feature coming soon: Visual charts and size analysis."
+}
+
+func (m MainModel) restoreView() string {
+	return styles.HeaderStyle.Render("Restore Snapshot") + "\n\n" +
+		"1. Select a snapshot from the 'Snapshots' tab.\n" +
+		"2. Choose a destination path.\n" +
+		"3. Click Restore.\n\n" +
+		"Coming soon: Interactive file selector."
 }
 
 func (m MainModel) backupView() string {
@@ -176,8 +219,12 @@ func (m MainModel) View() string {
 			content = m.dashboardView()
 		case stateSnapshots:
 			content = m.snapshotsView()
+		case stateRestore:
+			content = m.restoreView()
 		case stateBackup:
 			content = m.backupView()
+		case stateStats:
+			content = m.statsView()
 		case stateSettings:
 			content = m.settingsView()
 		}
