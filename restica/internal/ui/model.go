@@ -92,7 +92,6 @@ func NewMainModel(client *restic.Client) MainModel {
 
 	ti := textinput.New()
 	ti.Placeholder = "/path/to/backup"
-	ti.Focus()
 
 	return MainModel{
 		list:       l,
@@ -322,7 +321,15 @@ func (m MainModel) dashboardView() string {
 			"Snapshots: " + fmt.Sprintf("%d", len(m.snapshots)) + "\n" +
 			"Status: Connected",
 	) + "\n\n"
-	s += lipgloss.NewStyle().Foreground(styles.AccentColor).Render(Manifesto) + "\n\n"
+
+	manifestoStyle := lipgloss.NewStyle().
+		Foreground(styles.AccentColor).
+		Width(m.width - 30).
+		Padding(1, 2).
+		Border(lipgloss.DoubleBorder(), false, false, false, true).
+		BorderForeground(styles.PrimaryColor)
+
+	s += manifestoStyle.Render(Manifesto) + "\n\n"
 	s += "Use the arrow keys to navigate and Enter to select.\n"
 	s += "Press 'q' to exit."
 	return s
