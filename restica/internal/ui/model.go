@@ -7,9 +7,17 @@ import (
 
 	"github.com/charmbracelet/bubbles/list"
 	"github.com/charmbracelet/bubbles/spinner"
+	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 )
+
+const Manifesto = `RESTICA MANIFESTO
+-----------------
+1. Simplicity over Complexity: Restic is powerful, Restica makes it accessible.
+2. S3 Native: Built exclusively for the modern cloud storage era.
+3. Reliability: Your data is your most valuable asset; we treat it that way.
+4. Transparency: No magic, just a clean wrapper around proven technology.`
 
 type state int
 
@@ -45,15 +53,19 @@ func (m MainModel) fetchSnapshots() tea.Cmd {
 }
 
 type MainModel struct {
-	list      list.Model
-	state     state
-	client    *restic.Client
-	loading   bool
-	spinner   spinner.Model
-	width     int
-	height    int
-	err       error
-	snapshots []restic.Snapshot
+	list           list.Model
+	state          state
+	client         *restic.Client
+	loading        bool
+	spinner        spinner.Model
+	width          int
+	height         int
+	err            error
+	snapshots      []restic.Snapshot
+	input          textinput.Model
+	backupPath     string
+	restorePath    string
+	selectedSnapID string
 }
 
 func NewMainModel(client *restic.Client) MainModel {
@@ -76,11 +88,17 @@ func NewMainModel(client *restic.Client) MainModel {
 	s.Spinner = spinner.Dot
 	s.Style = lipgloss.NewStyle().Foreground(styles.PrimaryColor)
 
+	ti := textinput.New()
+	ti.Placeholder = "/path/to/backup"
+	ti.Focus()
+
 	return MainModel{
-		list:    l,
-		state:   stateDashboard,
-		client:  client,
-		spinner: s,
+		list:       l,
+		state:      stateDashboard,
+		client:     client,
+		spinner:    s,
+		input:      ti,
+		backupPath: "./sample-data",
 	}
 }
 
@@ -119,17 +137,45 @@ func (m MainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "ctrl+c", "q":
-			return m, tea.Quit
+			if !m.input.Focused() {
+				return m, tea.Quit
+			}
 		case "enter":
+			if m.state == stateBackup && m.input.Focused() {
+				m.backupPath = m.input.Value()
+				m.input.Blur()
+				m.loading = true
+				return m, m.runBackup()
+			}
+			if m.state == stateRestore && m.input.Focused() {
+				m.restorePath = m.input.Value()
+				m.input.Blur()
+				m.loading = true
+				return m, func() tea.Msg {
+					output, err := m.client.Restore(m.selectedSnapID, m.restorePath)
+					if err != nil {
+						return errorMsg(err)
+					}
+					return backupMsg(output)
+				}
+			}
 			if i, ok := m.list.SelectedItem().(item); ok {
 				m.state = i.state
+				m.err = nil
 				if m.state == stateSnapshots {
 					m.loading = true
 					return m, m.fetchSnapshots()
 				}
 				if m.state == stateBackup {
-					m.loading = true
-					return m, m.runBackup()
+					m.input.SetValue(m.backupPath)
+					m.input.Focus()
+				}
+				if m.state == stateRestore {
+					if len(m.snapshots) > 0 {
+						m.selectedSnapID = m.snapshots[0].ID
+						m.input.SetValue("/tmp/restore")
+						m.input.Focus()
+					}
 				}
 				if m.state == stateStats {
 					m.loading = true
@@ -139,6 +185,7 @@ func (m MainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "esc":
 			m.state = stateDashboard
 			m.err = nil
+			m.input.Blur()
 		case "r":
 			if m.state == stateSnapshots {
 				m.loading = true
@@ -166,7 +213,6 @@ func (m MainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	case statsMsg:
 		m.loading = false
-		// In a real app we'd parse this JSON, for now just show it
 		return m, nil
 
 	case errorMsg:
@@ -176,6 +222,11 @@ func (m MainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	case spinner.TickMsg:
 		m.spinner, cmd = m.spinner.Update(msg)
+		return m, cmd
+	}
+
+	if m.input.Focused() {
+		m.input, cmd = m.input.Update(msg)
 		return m, cmd
 	}
 
@@ -190,17 +241,23 @@ func (m MainModel) statsView() string {
 }
 
 func (m MainModel) restoreView() string {
-	return styles.HeaderStyle.Render("Restore Snapshot") + "\n\n" +
-		"1. Select a snapshot from the 'Snapshots' tab.\n" +
-		"2. Choose a destination path.\n" +
-		"3. Click Restore.\n\n" +
-		"Coming soon: Interactive file selector."
+	s := styles.HeaderStyle.Render("Restore from S3") + "\n\n"
+	if len(m.snapshots) == 0 {
+		return s + "No snapshots available to restore. Go to 'Snapshots' tab first."
+	}
+	s += fmt.Sprintf("Snapshot: %s\n\n", m.selectedSnapID)
+	s += "Restore Destination:\n"
+	s += m.input.View() + "\n\n"
+	s += "Press Enter to start restoration."
+	return s
 }
 
 func (m MainModel) backupView() string {
-	return styles.HeaderStyle.Render("Run Backup") + "\n\n" +
-		"Target: ./sample-data\n\n" +
-		"Press Enter to start backup."
+	s := styles.HeaderStyle.Render("Run S3 Backup") + "\n\n"
+	s += "Target Path:\n"
+	s += m.input.View() + "\n\n"
+	s += "Press Enter to start backup to S3."
+	return s
 }
 
 func (m MainModel) View() string {
@@ -212,7 +269,7 @@ func (m MainModel) View() string {
 			lipgloss.NewStyle().Foreground(styles.ErrorColor).Render(m.err.Error()) + "\n\n" +
 			"Press 'r' to retry."
 	} else if m.loading {
-		content = m.spinner.View() + " Loading snapshots..."
+		content = m.spinner.View() + " Loading..."
 	} else {
 		switch m.state {
 		case stateDashboard:
@@ -246,6 +303,7 @@ func (m MainModel) dashboardView() string {
 			"Snapshots: " + fmt.Sprintf("%d", len(m.snapshots)) + "\n" +
 			"Status: Connected",
 	) + "\n\n"
+	s += lipgloss.NewStyle().Foreground(styles.AccentColor).Render(Manifesto) + "\n\n"
 	s += "Use the arrow keys to navigate and Enter to select.\n"
 	s += "Press 'q' to exit."
 	return s
@@ -271,5 +329,10 @@ func (m MainModel) snapshotsView() string {
 }
 
 func (m MainModel) settingsView() string {
-	return styles.HeaderStyle.Render("Settings") + "\n\nFeature coming soon..."
+	s := styles.HeaderStyle.Render("S3 Settings") + "\n\n"
+	s += "RESTIC_REPOSITORY: " + m.client.Repository + "\n"
+	s += "AWS_ACCESS_KEY_ID: " + "********" + "\n"
+	s += "Status: S3 Exclusive Mode Active\n\n"
+	s += "Restica is optimized for S3-compatible storage."
+	return s
 }
