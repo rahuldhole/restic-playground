@@ -44,6 +44,26 @@ services:
       minio-init:
         condition: service_completed_successfully
 
+  zerobyte:
+    image: ghcr.io/nicotsx/zerobyte:latest
+    container_name: restic-zerobyte
+    restart: unless-stopped
+    ports:
+      - "4096:4096"
+    environment:
+      - TZ=UTC
+      - BASE_URL=http://localhost:4096
+      - APP_SECRET=7f5b3a1d9e2c4b6a8f0d2e4c6a8b0d2e
+    volumes:
+      - ./zerobyte/data:/var/lib/zerobyte
+      - ./sample-data:/sample-data:ro
+      - ./repo:/repo:rw
+    depends_on:
+      minio:
+        condition: service_started
+      minio-init:
+        condition: service_completed_successfully
+
   data-gen:
     image: alpine:latest
     container_name: restic-data-gen

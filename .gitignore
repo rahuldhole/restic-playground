@@ -3,6 +3,7 @@ sample-data/
 repo/
 minio_data/
 backrest/
+zerobyte/
 logs/
 
 # Environment variables
