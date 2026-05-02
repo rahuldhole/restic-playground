@@ -45,7 +45,12 @@ func (c *Client) AddEnv(key, value string) {
 
 // Run executes a restic command and returns the output
 func (c *Client) Run(args ...string) (string, error) {
-	cmd := exec.Command("restic", args...)
+	// Prepend docker exec arguments to run inside the container
+	dockerArgs := append([]string{"exec", "restic-playground", "restic"}, args...)
+	cmd := exec.Command("docker", dockerArgs...)
+	
+	// We don't strictly need to pass Env if they are already in the container, 
+	// but it doesn't hurt and ensures we use the Client's config.
 	cmd.Env = append(cmd.Environ(), c.Env...)
 	
 	var stdout, stderr bytes.Buffer

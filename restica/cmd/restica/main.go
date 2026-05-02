@@ -13,7 +13,7 @@ func main() {
 	// Initialize restic client with environment variables or defaults
 	repo := os.Getenv("RESTIC_REPOSITORY")
 	if repo == "" {
-		repo = "/repo" // Default for the playground
+		repo = "s3:http://minio:9000/playground" // Default for the docker network
 	}
 	password := os.Getenv("RESTIC_PASSWORD")
 	if password == "" {
