@@ -27,6 +27,7 @@ const (
 	stateRestore
 	stateBackup
 	stateStats
+	stateMaintenance
 	stateSettings
 )
 
@@ -75,6 +76,7 @@ func NewMainModel(client *restic.Client) MainModel {
 		item{title: "Restore", desc: "Recover data from snapshots", state: stateRestore},
 		item{title: "Backup", desc: "Create a new backup", state: stateBackup},
 		item{title: "Stats", desc: "View repository statistics", state: stateStats},
+		item{title: "Maintenance", desc: "Check and prune repository", state: stateMaintenance},
 		item{title: "Settings", desc: "Configure restic environment", state: stateSettings},
 	}
 
@@ -195,6 +197,17 @@ func (m MainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.loading = true
 				return m, m.fetchStats()
 			}
+		case "c":
+			if m.state == stateMaintenance {
+				m.loading = true
+				return m, func() tea.Msg {
+					output, err := m.client.Check()
+					if err != nil {
+						return errorMsg(err)
+					}
+					return backupMsg(output)
+				}
+			}
 		}
 
 	case tea.WindowSizeMsg:
@@ -261,6 +274,10 @@ func (m MainModel) backupView() string {
 }
 
 func (m MainModel) View() string {
+	if m.width == 0 || m.height == 0 {
+		return "Initializing Restica..."
+	}
+
 	sidebar := m.list.View()
 
 	var content string
@@ -282,6 +299,8 @@ func (m MainModel) View() string {
 			content = m.backupView()
 		case stateStats:
 			content = m.statsView()
+		case stateMaintenance:
+			content = m.maintenanceView()
 		case stateSettings:
 			content = m.settingsView()
 		}
@@ -325,6 +344,15 @@ func (m MainModel) snapshotsView() string {
 	}
 
 	s += "\n\nPress 'r' to refresh."
+	return s
+}
+
+func (m MainModel) maintenanceView() string {
+	s := styles.HeaderStyle.Render("Repository Maintenance") + "\n\n"
+	s += "Select an operation:\n\n"
+	s += "1. [c] Run Consistency Check\n"
+	s += "2. [p] Prune Unused Data (Coming Soon)\n\n"
+	s += "Maintenance ensures your S3 backups are healthy."
 	return s
 }
 

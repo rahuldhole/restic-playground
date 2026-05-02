@@ -2,6 +2,7 @@ package restic
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"os/exec"
@@ -45,12 +46,23 @@ func (c *Client) AddEnv(key, value string) {
 
 // Run executes a restic command and returns the output
 func (c *Client) Run(args ...string) (string, error) {
-	// Prepend docker exec arguments to run inside the container
-	dockerArgs := append([]string{"exec", "restic-playground", "restic"}, args...)
-	cmd := exec.Command("docker", dockerArgs...)
+	// Add a timeout to prevent hanging the TUI
+	var dockerArgs []string
+	dockerArgs = append(dockerArgs, "exec")
 	
-	// We don't strictly need to pass Env if they are already in the container, 
-	// but it doesn't hurt and ensures we use the Client's config.
+	// Pass environment variables to the container via -e
+	for _, env := range c.Env {
+		dockerArgs = append(dockerArgs, "-e", env)
+	}
+	
+	dockerArgs = append(dockerArgs, "restic-playground", "restic")
+	dockerArgs = append(dockerArgs, args...)
+	
+	// Create command with a 30 second timeout
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	cmd := exec.CommandContext(ctx, "docker", dockerArgs...)
 	cmd.Env = append(cmd.Environ(), c.Env...)
 	
 	var stdout, stderr bytes.Buffer
@@ -59,6 +71,9 @@ func (c *Client) Run(args ...string) (string, error) {
 
 	err := cmd.Run()
 	if err != nil {
+		if ctx.Err() == context.DeadlineExceeded {
+			return "", fmt.Errorf("restic command timed out after 30 seconds")
+		}
 		return "", fmt.Errorf("restic error: %v, stderr: %s", err, stderr.String())
 	}
 
